@@ -1,101 +1,47 @@
 <!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PLSS Lookup</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #121212;
-        color: #f0f0f0;
-        margin: 0;
-        padding: 20px;
-    }.container {
-    max-width: 700px;
-    margin: auto;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-textarea {
-    width: 100%;
-    height: 80px;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    font-size: 16px;
-    resize: vertical;
-    box-sizing: border-box;
-}
-
-.button-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-}
-
-button {
-    background: #2e7dff;
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
     color: white;
-    border: none;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 15px;
-    cursor: pointer;
-}
+    margin: 0;
+    padding: 20px;
+}.container { max-width: 700px; margin: auto; }
 
-button:hover {
-    opacity: 0.9;
-}
+h1 { text-align: center; margin-bottom: 20px; }
 
-.clear-btn {
-    background: #666;
-}
+textarea { width: 100%; height: 90px; border-radius: 12px; border: none; padding: 15px; font-size: 18px; box-sizing: border-box; }
 
-.earth-btn {
-    background: #2e8b57;
-}
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
 
-.gps-btn {
-    background: #9c27b0;
-}
+button { border: none; border-radius: 12px; padding: 14px 18px; font-size: 18px; color: white; cursor: pointer; }
 
-.result {
-    margin-top: 20px;
-    background: #1e1e1e;
-    padding: 16px;
-    border-radius: 12px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
+.lookup { background: #2d6cdf; } .clear { background: #666; } .gps { background: #9c27b0; } .earth { background: #2e8b57; }
 
-.small {
-    font-size: 13px;
-    color: #bdbdbd;
-    margin-top: 8px;
-}
+.result { background: #1d1d1d; border-radius: 14px; padding: 20px; margin-top: 25px; min-height: 120px; white-space: pre-wrap; font-size: 18px; line-height: 1.5; }
 
-</style>
+.note { color: #bbb; margin-top: 10px; } </style>
+
 </head>
 <body>
 <div class="container">
-    <h1>PLSS Lookup</h1><textarea id="coordInput" placeholder="Paste coordinates here...
+    <h1>PLSS Lookup</h1><textarea id="coordInput" placeholder="Examples:
 
-Examples: 44.30967°N, 122.83609°W 44.30967, -122.83609 44°18'34.8"N 122°50'09.9"W 44 18 34.8 N, 122 50 09.9 W"></textarea>
+44.30967°N, 122.83609°W 44.30967, -122.83609 44°18'34.8"N 122°50'09.9"W"></textarea>
 
-<div class="button-row">
-    <button onclick="lookupPLSS()">Lookup</button>
-    <button class="clear-btn" onclick="clearInput()">Clear</button>
-    <button class="gps-btn" onclick="useGPS()">Use GPS</button>
-    <button class="earth-btn" onclick="openGoogleEarth()">Google Earth</button>
+<div class="buttons">
+    <button class="lookup" onclick="lookupPLSS()">Lookup</button>
+    <button class="clear" onclick="clearInput()">Clear</button>
+    <button class="gps" onclick="useGPS()">Use GPS</button>
+    <button class="earth" onclick="openGoogleEarth()">Google Earth</button>
 </div>
 
-<div class="small">
-    Supports Decimal Degrees, Signed Decimal, and DMS formats.
+<div class="note">
+    Supports decimal degrees and DMS formats.
 </div>
 
 <div class="result" id="result">
@@ -114,10 +60,7 @@ function clearInput() {
 function parseCoordinates(input) {
     input = input.trim();
 
-    // ---------------------------------
-    // Format 1:
-    // 44.30967°N, 122.83609°W
-    // ---------------------------------
+    // Format: 44.30967°N, 122.83609°W
     let regex1 = /([\d.]+)\s*°?\s*([NS])[,\s]+([\d.]+)\s*°?\s*([EW])/i;
     let match1 = input.match(regex1);
 
@@ -131,10 +74,7 @@ function parseCoordinates(input) {
         return { lat, lon };
     }
 
-    // ---------------------------------
-    // Format 2:
-    // 44.30967, -122.83609
-    // ---------------------------------
+    // Format: 44.30967, -122.83609
     let regex2 = /^\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*$/;
     let match2 = input.match(regex2);
 
@@ -145,10 +85,7 @@ function parseCoordinates(input) {
         };
     }
 
-    // ---------------------------------
-    // Format 3:
-    // 44°18'34.8"N 122°50'09.9"W
-    // ---------------------------------
+    // DMS format
     let regex3 = /(\d+)[°\s]+(\d+)[’'\s]+([\d.]+)["”\s]*([NS])[,\s]+(\d+)[°\s]+(\d+)[’'\s]+([\d.]+)["”\s]*([EW])/i;
     let match3 = input.match(regex3);
 
@@ -172,14 +109,59 @@ function dmsToDecimal(deg, min, sec, dir) {
     return val;
 }
 
-function quarterQuarter(lat, lon) {
+function approxQuarterQuarter(lat, lon) {
     let ns = (Math.abs(lat * 1000) % 1000) > 500 ? 'N' : 'S';
     let ew = (Math.abs(lon * 1000) % 1000) > 500 ? 'E' : 'W';
 
     let ns2 = (Math.abs(lat * 2000) % 1000) > 500 ? 'N' : 'S';
     let ew2 = (Math.abs(lon * 2000) % 1000) > 500 ? 'E' : 'W';
 
-    return `${ns}${ew}-${ns2}${ew2}`;
+    return `${ns}${ew}${ns2}${ew2}`;
+}
+
+async function lookupAliquot(lat, lon) {
+    try {
+        const aliquotURL = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
+
+        const params = new URLSearchParams({
+            geometry: `${lon},${lat}`,
+            geometryType: 'esriGeometryPoint',
+            inSR: '4326',
+            spatialRel: 'esriSpatialRelIntersects',
+            returnGeometry: 'false',
+            outFields: '*',
+            f: 'json'
+        });
+
+        const response = await fetch(`${aliquotURL}?${params}`);
+        const data = await response.json();
+
+        if (!data.features || data.features.length === 0) {
+            return null;
+        }
+
+        const attrs = data.features[0].attributes;
+
+        const possibleFields = [
+            'QQSEC',
+            'QSEC',
+            'LABEL',
+            'ALIQUOT',
+            'LEGALDESC'
+        ];
+
+        for (const field of possibleFields) {
+            if (attrs[field]) {
+                return attrs[field];
+            }
+        }
+
+        return null;
+
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
 }
 
 async function lookupPLSS() {
@@ -194,7 +176,6 @@ async function lookupPLSS() {
 
         result.innerText = 'Looking up PLSS data...';
 
-        // Primary PLSS lookup
         const url = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/1/query';
 
         const params = new URLSearchParams({
@@ -211,7 +192,7 @@ async function lookupPLSS() {
         const data = await response.json();
 
         if (!data.features || data.features.length === 0) {
-            result.innerText = 'No PLSS data found for this location.';
+            result.innerText = 'No PLSS data found.';
             return;
         }
 
@@ -221,18 +202,10 @@ async function lookupPLSS() {
         const range = attrs.RANGE || 'Unknown';
         const section = attrs.FRSTDIVNO || 'Unknown';
 
-        // Attempt REAL aliquot lookup
-        let aliquot = null;
+        let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
-        try {
-            aliquot = await lookupAliquot(coords.lat, coords.lon);
-        } catch (e) {
-            console.log('Aliquot lookup failed:', e);
-        }
-
-        // Fallback to approximation if GIS subdivision unavailable
         if (!aliquot) {
-            aliquot = quarterQuarter(coords.lat, coords.lon) + ' (Approx.)';
+            aliquot = approxQuarterQuarter(coords.lat, coords.lon) + ' (Approx.)';
         }
 
         result.innerText =
@@ -252,59 +225,6 @@ T${township} R${range} Sec ${section} ${aliquot}`;
     }
 }
 
-    } catch (err) {
-        result.innerText = `Error: ${err.message}`;
-    }
-}
-
-// --------------------------------------------------
-// Attempt real aliquot subdivision lookup
-// --------------------------------------------------
-async function lookupAliquot(lat, lon) {
-
-    // Different states expose subdivision layers differently.
-    // This layer works for many western PLSS states.
-
-    const aliquotURL = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
-
-    const params = new URLSearchParams({
-        geometry: `${lon},${lat}`,
-        geometryType: 'esriGeometryPoint',
-        inSR: '4326',
-        spatialRel: 'esriSpatialRelIntersects',
-        returnGeometry: 'false',
-        outFields: '*',
-        f: 'json'
-    });
-
-    const response = await fetch(`${aliquotURL}?${params}`);
-    const data = await response.json();
-
-    if (!data.features || data.features.length === 0) {
-        return null;
-    }
-
-    const attrs = data.features[0].attributes;
-
-    // Common possible aliquot field names
-    const possibleFields = [
-        'QQSEC',
-        'QSEC',
-        'FRSTDIVID',
-        'LABEL',
-        'LEGALDESC',
-        'ALIQUOT'
-    ];
-
-    for (const field of possibleFields) {
-        if (attrs[field]) {
-            return attrs[field];
-        }
-    }
-
-    return null;
-}
-
 function openGoogleEarth() {
     if (currentLat === null || currentLon === null) {
         alert('Run a lookup first.');
@@ -319,21 +239,21 @@ function useGPS() {
     const result = document.getElementById('result');
 
     if (!navigator.geolocation) {
-        result.innerText = 'Geolocation is not supported on this device.';
+        result.innerText = 'Geolocation not supported.';
         return;
     }
 
     result.innerText = 'Getting GPS location...';
 
     navigator.geolocation.getCurrentPosition(
-        (position) => {
+        function(position) {
             const lat = position.coords.latitude.toFixed(6);
             const lon = position.coords.longitude.toFixed(6);
 
             document.getElementById('coordInput').value = `${lat}, ${lon}`;
             lookupPLSS();
         },
-        (error) => {
+        function(error) {
             result.innerText = 'GPS error: ' + error.message;
         }
     );
