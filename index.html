@@ -213,6 +213,9 @@ async function lookupPLSS() {
         const data = await response.json();
 
         if (!data.features || data.features.length === 0) {
+    result.innerText = 'No PLSS data found.';
+    return;
+}
 
         const attrs = data.features[0].attributes;
 
@@ -256,9 +259,7 @@ try {
 
         const secAttrs =
             sectionData.features[0].attributes;
-      
-        result.innerText = JSON.stringify(secAttrs, null, 2);
-return; 
+    
 
         section =
             secAttrs.FRSTDIVNO ||
