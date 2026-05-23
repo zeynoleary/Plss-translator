@@ -108,7 +108,43 @@ function dmsToDecimal(deg, min, sec, dir) {
 
     return val;
 }
+function drawSectionMap(percentX, percentY) {
 
+    return `
+    <svg width="100%" viewBox="0 0 320 320"
+         style="margin-top:20px;
+                background:#111;
+                border-radius:12px;">
+
+
+        <!-- Outer border -->
+        <rect x="10" y="10"
+              width="300" height="300"
+              fill="none"
+              stroke="white"
+              stroke-width="2"/>
+
+        <!-- Grid lines -->
+        ${[1,2,3].map(i => `
+            <line x1="${10 + i*75}" y1="10"
+                  x2="${10 + i*75}" y2="310"
+                  stroke="#555"/>
+
+            <line x1="10" y1="${10 + i*75}"
+                  x2="310" y2="${10 + i*75}"
+                  stroke="#555"/>
+        `).join('')}
+
+        <!-- Red location dot -->
+        <circle
+            cx="${10 + percentX * 300}"
+            cy="${10 + (1 - percentY) * 300}"
+            r="7"
+            fill="red"/>
+
+    </svg>
+    `;
+}
 function approxQuarterQuarter(lat, lon, bounds) {
 
     const midLat =
@@ -272,7 +308,8 @@ try {
 
 } catch (e) {
     console.log('Section lookup failed', e);
-}
+}let percentX = 0.5;
+let percentY = 0.5;
 
         let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
@@ -284,6 +321,11 @@ try {
     let xmax = -Infinity;
     let ymin = Infinity;
     let ymax = -Infinity;
+        percentX =
+    (coords.lon - xmin) / (xmax - xmin);
+const
+percentY =
+    (coords.lat - ymin) / (ymax - ymin);     
 
     const rings = geom.rings || [];
 
@@ -312,7 +354,7 @@ try {
             }
         ) + ' (Approx.)';
 }
-        result.innerText =
+        result.innerHTML=
 `Latitude: ${coords.lat}
 Longitude: ${coords.lon}
 
@@ -322,10 +364,13 @@ Section: ${section}
 Quarter-Quarter: ${aliquot}
 
 Legal Description:
-T${township} R${range} Sec ${section} ${aliquot}`;
+T${township} R${range} Sec ${section} ${aliquot}
+
+${drawSectionMap(percentX, percentY)}
+`;
 
     } catch (err) {
-        result.innerText = `Error: ${err.message}`;
+        result.innertext = `Error: ${err.message}`;
     }
 }
 
