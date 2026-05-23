@@ -209,18 +209,47 @@ async function lookupPLSS() {
         ? attrs.RANGENO + attrs.RANGEDIR
         : 'Unknown';
 
-        const section =
-    attrs.FRSTDIVNO ||
-    attrs.SECDIVNO ||
-    attrs.SECTION ||
-    attrs.SEC_NO ||
-    attrs.SEC ||
-    attrs.FIRSTDIVNO ||
-    attrs.SECDIVID ||
-    attrs.SECTION_NUMBER ||
-    attrs.SECDIV ||
-    attrs.FRSTDIVID ||
-    'Unknown';
+        let section = 'Unknown';
+
+try {
+
+    const sectionURL =
+        'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
+
+    const sectionParams = new URLSearchParams({
+        geometry: `${coords.lon},${coords.lat}`,
+        geometryType: 'esriGeometryPoint',
+        inSR: '4326',
+        spatialRel: 'esriSpatialRelIntersects',
+        returnGeometry: 'false',
+        outFields: '*',
+        f: 'json'
+    });
+
+    const sectionResponse =
+        await fetch(`${sectionURL}?${sectionParams}`);
+
+    const sectionData =
+        await sectionResponse.json();
+
+    if (sectionData.features &&
+        sectionData.features.length > 0) {
+
+        const secAttrs =
+            sectionData.features[0].attributes;
+
+        section =
+            secAttrs.FRSTDIVNO ||
+            secAttrs.SECDIVNO ||
+            secAttrs.SEC ||
+            secAttrs.SEC_NO ||
+            secAttrs.SECTION ||
+            'Unknown';
+    }
+
+} catch (e) {
+    console.log('Section lookup failed', e);
+}
 
         let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
