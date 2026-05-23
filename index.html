@@ -237,6 +237,9 @@ try {
 
         const secAttrs =
             sectionData.features[0].attributes;
+      
+        result.innerText = JSON.stringify(secAttrs, null, 2);
+return; 
 
         section =
             secAttrs.FRSTDIVNO ||
