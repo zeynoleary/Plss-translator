@@ -198,9 +198,28 @@ async function lookupPLSS() {
 
         const attrs = data.features[0].attributes;
 
-        const township = attrs.TOWNSHIP || 'Unknown';
-        const range = attrs.RANGE || 'Unknown';
-        const section = attrs.FRSTDIVNO || 'Unknown';
+        // Try multiple possible field names from BLM datasets
+        const township =
+            attrs.TOWNSHIP ||
+            attrs.TWP_NO ||
+            attrs.TWNSHPNO ||
+            attrs.TWNSHP ||
+            'Unknown';
+
+        const range =
+            attrs.RANGE ||
+            attrs.RNG_NO ||
+            attrs.RANGENO ||
+            attrs.RNG ||
+            'Unknown';
+
+        const section =
+            attrs.FRSTDIVNO ||
+            attrs.SECDIVNO ||
+            attrs.SECTION ||
+            attrs.SEC_NO ||
+            attrs.SEC ||
+            'Unknown';
 
         let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
