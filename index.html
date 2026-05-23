@@ -142,8 +142,6 @@ async function lookupAliquot(lat, lon) {
 
         const attrs = data.features[0].attributes;
 
-        result.innerText = JSON.stringify(attrs, null, 2);
-return;
         const possibleFields = [
             'QQSEC',
             'QSEC',
