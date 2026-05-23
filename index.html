@@ -149,7 +149,7 @@ async function lookupAliquot(lat, lon) {
             geometryType: 'esriGeometryPoint',
             inSR: '4326',
             spatialRel: 'esriSpatialRelIntersects',
-            returnGeometry: 'false',
+            returnGeometry: 'true',
             outFields: '*',
             f: 'json'
         });
@@ -204,7 +204,7 @@ async function lookupPLSS() {
             geometryType: 'esriGeometryPoint',
             inSR: '4326',
             spatialRel: 'esriSpatialRelIntersects',
-            returnGeometry: 'false',
+            returnGeometry: 'true',
             outFields: '*',
             f: 'json'
         });
@@ -252,6 +252,7 @@ try {
 
     const sectionData =
         await sectionResponse.json();
+    window.sectionData = sectionData;
 
     if (sectionData.features &&
         sectionData.features.length > 0) {
@@ -278,9 +279,41 @@ return;
         let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
         if (!aliquot) {
-            aliquot = approxQuarterQuarter(coords.lat, coords.lon) + ' (Approx.)';
-        }
 
+    const geom = window.sectionData.features[0].geometry;
+
+    let xmin = Infinity;
+    let xmax = -Infinity;
+    let ymin = Infinity;
+    let ymax = -Infinity;
+
+    const rings = geom.rings || [];
+
+    for (const ring of rings) {
+        for (const pt of ring) {
+
+            const x = pt[0];
+            const y = pt[1];
+
+            if (x < xmin) xmin = x;
+            if (x > xmax) xmax = x;
+            if (y < ymin) ymin = y;
+            if (y > ymax) ymax = y;
+        }
+    }
+
+    aliquot =
+        approxQuarterQuarter(
+            coords.lat,
+            coords.lon,
+            {
+                xmin,
+                xmax,
+                ymin,
+                ymax
+            }
+        ) + ' (Approx.)';
+}
         result.innerText =
 `Latitude: ${coords.lat}
 Longitude: ${coords.lon}
