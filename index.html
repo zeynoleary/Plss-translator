@@ -142,7 +142,7 @@ function approxQuarterQuarter(lat, lon, bounds) {
 
 async function lookupAliquot(lat, lon) {
     try {
-        const aliquotURL = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
+        const aliquotURL = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/3/query';
 
         const params = new URLSearchParams({
             geometry: `${lon},${lat}`,
@@ -235,7 +235,7 @@ async function lookupPLSS() {
 try {
 
     const sectionURL =
-        'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
+        'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/3/query';
 
     const sectionParams = new URLSearchParams({
         geometry: `${coords.lon},${coords.lat}`,
