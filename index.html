@@ -213,9 +213,6 @@ async function lookupPLSS() {
         const data = await response.json();
 
         if (!data.features || data.features.length === 0) {
-            result.innerText = 'No PLSS data found.';
-            return;
-        }
 
         const attrs = data.features[0].attributes;
 
@@ -242,7 +239,7 @@ try {
         geometryType: 'esriGeometryPoint',
         inSR: '4326',
         spatialRel: 'esriSpatialRelIntersects',
-        returnGeometry: 'false',
+        returnGeometry: 'true',
         outFields: '*',
         f: 'json'
     });
