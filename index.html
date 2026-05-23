@@ -109,14 +109,35 @@ function dmsToDecimal(deg, min, sec, dir) {
     return val;
 }
 
-function approxQuarterQuarter(lat, lon) {
-    let ns = (Math.abs(lat * 1000) % 1000) > 500 ? 'N' : 'S';
-    let ew = (Math.abs(lon * 1000) % 1000) > 500 ? 'E' : 'W';
+function approxQuarterQuarter(lat, lon, bounds) {
 
-    let ns2 = (Math.abs(lat * 2000) % 1000) > 500 ? 'N' : 'S';
-    let ew2 = (Math.abs(lon * 2000) % 1000) > 500 ? 'E' : 'W';
+    const midLat =
+        (bounds.ymin + bounds.ymax) / 2;
 
-    return `${ns}${ew}${ns2}${ew2}`;
+    const midLon =
+        (bounds.xmin + bounds.xmax) / 2;
+
+    let quarterNS =
+        lat >= midLat ? 'N' : 'S';
+
+    let quarterEW =
+        lon >= midLon ? 'E' : 'W';
+
+    let qqNS =
+        lat >= (
+            quarterNS === 'N'
+                ? (midLat + bounds.ymax) / 2
+                : (bounds.ymin + midLat) / 2
+        ) ? 'N' : 'S';
+
+    let qqEW =
+        lon >= (
+            quarterEW === 'E'
+                ? (midLon + bounds.xmax) / 2
+                : (bounds.xmin + midLon) / 2
+        ) ? 'E' : 'W';
+
+    return `${qqNS}${qqEW}${quarterNS}${quarterEW}`;
 }
 
 async function lookupAliquot(lat, lon) {
