@@ -176,7 +176,7 @@ async function lookupPLSS() {
 
         result.innerText = 'Looking up PLSS data...';
 
-        const url = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/1/query';
+        const url = 'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
 
         const params = new URLSearchParams({
             geometry: `${coords.lon},${coords.lat}`,
