@@ -215,12 +215,17 @@ async function lookupPLSS() {
             'Unknown';
 
         const section =
-            attrs.FRSTDIVNO ||
-            attrs.SECDIVNO ||
-            attrs.SECTION ||
-            attrs.SEC_NO ||
-            attrs.SEC ||
-            'Unknown';
+    attrs.FRSTDIVNO ||
+    attrs.SECDIVNO ||
+    attrs.SECTION ||
+    attrs.SEC_NO ||
+    attrs.SEC ||
+    attrs.FIRSTDIVNO ||
+    attrs.SECDIVID ||
+    attrs.SECTION_NUMBER ||
+    attrs.SECDIV ||
+    attrs.FRSTDIVID ||
+    'Unknown';
 
         let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
