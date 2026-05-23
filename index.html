@@ -199,12 +199,13 @@ async function lookupPLSS() {
         const attrs = data.features[0].attributes;
 
         // Try multiple possible field names from BLM datasets
-        const township =
+        const township = (
             attrs.TOWNSHIP ||
             attrs.TWP_NO ||
             attrs.TWNSHPNO ||
             attrs.TWNSHP ||
-            'Unknown';
+            'Unknown'
+        );
 
         const range =
             attrs.RANGE ||
