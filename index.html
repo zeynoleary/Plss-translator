@@ -108,7 +108,47 @@ function dmsToDecimal(deg, min, sec, dir) {
 
     return val;
 }
-function drawSectionMap(percentX, percentY) {
+function drawSectionMap(aliquot) {
+
+    let percentX = 0.5;
+    let percentY = 0.5;
+
+    const map = {
+
+        // Northwest quarter
+        "NWNW": [0.125, 0.875],
+        "NENW": [0.375, 0.875],
+        "SWNW": [0.125, 0.625],
+        "SENW": [0.375, 0.625],
+
+        // Northeast quarter
+        "NWNE": [0.625, 0.875],
+        "NENE": [0.875, 0.875],
+        "SWNE": [0.625, 0.625],
+        "SENE": [0.875, 0.625],
+
+        // Southwest quarter
+        "NWSW": [0.125, 0.375],
+        "NESW": [0.375, 0.375],
+        "SWSW": [0.125, 0.125],
+        "SESW": [0.375, 0.125],
+
+        // Southeast quarter
+        "NWSE": [0.625, 0.375],
+        "NESE": [0.875, 0.375],
+        "SWSE": [0.625, 0.125],
+        "SESE": [0.875, 0.125]
+    };
+
+    const clean =
+        aliquot
+            .replace(" (Approx.)", "")
+            .trim();
+
+    if (map[clean]) {
+        percentX = map[clean][0];
+        percentY = map[clean][1];
+    }
 
     return `
     <svg width="100%" viewBox="0 0 320 320"
@@ -116,32 +156,35 @@ function drawSectionMap(percentX, percentY) {
                 background:#111;
                 border-radius:12px;">
 
-
         <!-- Outer border -->
         <rect x="10" y="10"
-              width="300" height="300"
+              width="300"
+              height="300"
               fill="none"
               stroke="white"
               stroke-width="2"/>
 
-        <!-- Grid lines -->
+        <!-- Grid -->
         ${[1,2,3].map(i => `
-            <line x1="${10 + i*75}" y1="10"
-                  x2="${10 + i*75}" y2="310"
+            <line x1="${10 + i*75}"
+                  y1="10"
+                  x2="${10 + i*75}"
+                  y2="310"
                   stroke="#555"/>
 
-            <line x1="10" y1="${10 + i*75}"
-                  x2="310" y2="${10 + i*75}"
+            <line x1="10"
+                  y1="${10 + i*75}"
+                  x2="310"
+                  y2="${10 + i*75}"
                   stroke="#555"/>
         `).join('')}
 
-        <!-- Red location dot -->
+        <!-- Red Dot -->
         <circle
             cx="${10 + percentX * 300}"
             cy="${10 + (1 - percentY) * 300}"
             r="7"
             fill="red"/>
-
     </svg>
     `;
 }
@@ -384,7 +427,7 @@ Quarter-Quarter: ${aliquot}
 Legal Description:
 T${township} R${range} Sec ${section} ${aliquot}
 
-${drawSectionMap(percentX, percentY)}
+${drawSectionMap(aliquot)}
 `;
 
     } catch (err) {
