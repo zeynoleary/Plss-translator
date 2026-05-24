@@ -187,6 +187,7 @@ async function lookupAliquot(lat, lon) {
             spatialRel: 'esriSpatialRelIntersects',
             returnGeometry: 'true',
             outFields: '*',
+            outSR: '4326',
             f: 'json'
         });
 
@@ -280,6 +281,7 @@ try {
         spatialRel: 'esriSpatialRelIntersects',
         returnGeometry: 'true',
         outFields: '*',
+        outSR: '4326',
         f: 'json'
     });
 
