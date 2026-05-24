@@ -311,13 +311,11 @@ try {
 }let percentX = 0.5;
 let percentY = 0.5;
 
-        let aliquot = await lookupAliquot(coords.lat, coords.lon);
+  let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
- {
+const geom = window.sectionData.features[0].geometry;
 
-    const geom = window.sectionData.features[0].geometry;
-
-    let xmin = Infinity;
+let xmin = Infinity;
 let xmax = -Infinity;
 let ymin = Infinity;
 let ymax = -Infinity;
@@ -337,12 +335,13 @@ for (const ring of rings) {
     }
 }
 
- percentX =
+percentX =
     (coords.lon - xmin) / (xmax - xmin);
-percentY =
-    (coords.lat - ymin) / (ymax - ymin);     
 
-    if (!aliquot) {
+percentY =
+    (coords.lat - ymin) / (ymax - ymin);
+
+if (!aliquot) {
     aliquot =
         approxQuarterQuarter(
             coords.lat,
@@ -354,8 +353,7 @@ percentY =
                 ymax
             }
         ) + ' (Approx.)';
-}
-        result.innerHTML=
+}     result.innerHTML=
 `Latitude: ${coords.lat}
 Longitude: ${coords.lon}
 
