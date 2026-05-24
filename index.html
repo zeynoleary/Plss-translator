@@ -359,19 +359,9 @@ let percentY = 0.5;
   let aliquot = await lookupAliquot(coords.lat, coords.lon);
         
 
-if (!aliquot && xmin !== null) {
-    aliquot =
-        approxQuarterQuarter(
-            coords.lat,
-            coords.lon,
-            {
-                xmin,
-                xmax,
-                ymin,
-                ymax
-            }
-        ) + ' (Approx.)';
-}     result.innerHTML=
+ if (!aliquot) {
+    aliquot = 'Center';
+} result.innerHTML=
 `Latitude: ${coords.lat}
 Longitude: ${coords.lon}
 
