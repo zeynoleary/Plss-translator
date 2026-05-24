@@ -313,6 +313,11 @@ let percentY = 0.5;
 
   let aliquot = await lookupAliquot(coords.lat, coords.lon);
 
+let xmin = null;
+let xmax = null;
+let ymin = null;
+let ymax = null;
+
 if (
     window.sectionData &&
     window.sectionData.features &&
@@ -322,10 +327,10 @@ if (
     const geom =
         window.sectionData.features[0].geometry;
 
-    let xmin = Infinity;
-    let xmax = -Infinity;
-    let ymin = Infinity;
-    let ymax = -Infinity;
+    xmin = Infinity;
+    xmax = -Infinity;
+    ymin = Infinity;
+    ymax = -Infinity;
 
     const rings = geom.rings || [];
 
@@ -348,6 +353,9 @@ if (
     percentY =
         (coords.lat - ymin) / (ymax - ymin);
 
+    // Keep dot inside box
+    percentX = Math.max(0, Math.min(1, percentX));
+    percentY = Math.max(0, Math.min(1, percentY));
 }
 
 if (!aliquot) {
