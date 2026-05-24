@@ -358,7 +358,7 @@ if (
     percentY = Math.max(0, Math.min(1, percentY));
 }
 
-if (!aliquot) {
+if (!aliquot && xmin !== null) {
     aliquot =
         approxQuarterQuarter(
             coords.lat,
