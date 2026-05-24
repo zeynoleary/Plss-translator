@@ -271,7 +271,7 @@ async function lookupPLSS() {
 try {
 
     const sectionURL =
-        'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/3/query';
+        'https://gis.blm.gov/arcgis/rest/services/Cadastral/BLM_Natl_PLSS_CadNSDI/MapServer/2/query';
 
     const sectionParams = new URLSearchParams({
         geometry: `${coords.lon},${coords.lat}`,
@@ -321,12 +321,7 @@ let percentY = 0.5;
     let xmax = -Infinity;
     let ymin = Infinity;
     let ymax = -Infinity;
-        percentX =
-    (coords.lon - xmin) / (xmax - xmin);
-const
-percentY =
-    (coords.lat - ymin) / (ymax - ymin);     
-
+       
     const rings = geom.rings || [];
 
     for (const ring of rings) {
@@ -341,6 +336,10 @@ percentY =
             if (y > ymax) ymax = y;
         }
     }
+ percentX =
+    (coords.lon - xmin) / (xmax - xmin);
+percentY =
+    (coords.lat - ymin) / (ymax - ymin);     
 
     aliquot =
         approxQuarterQuarter(
@@ -370,7 +369,7 @@ ${drawSectionMap(percentX, percentY)}
 `;
 
     } catch (err) {
-        result.innertext = `Error: ${err.message}`;
+        result.innerText = `Error: ${err.message}`;
     }
 }
 
