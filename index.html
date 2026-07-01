@@ -118,7 +118,7 @@ function dmsToDecimal(deg, min, sec, dir) {
         .replace("¼", "")
         .replace("(APPROX.)", "");
 }
-function drawSectionMap(aliquot) {
+function {
 
     let percentX = 0.5;
     let percentY = 0.5;
@@ -363,28 +363,15 @@ try {
 
 } catch (e) {
     console.log('Section lookup failed', e);
-}let percentX = 0.5;
-let percentY = 0.5;
+}
 
-  let aliquot = await lookupAliquot(coords.lat, coords.lon);
+
+  let aliquot = cleanAliquot(await lookupAliquot(coords.lat, coords.lon));
         
 
  if (!aliquot) {
     aliquot = 'Center';
-} result.innerHTML=
-`Latitude: ${coords.lat}
-Longitude: ${coords.lon}
-
-Township: ${township}
-Range: ${range}
-Section: ${section}
-Quarter-Quarter: ${aliquot}
-
-Legal Description:
-T${township} R${range} Sec ${section} ${aliquot}
-
-${drawSectionMap(aliquot)}
-`;
+} 
 
     } catch (err) {
         result.innerText = `Error: ${err.message}`;
