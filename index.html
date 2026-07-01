@@ -108,6 +108,16 @@ function dmsToDecimal(deg, min, sec, dir) {
 
     return val;
 }
+    function cleanAliquot(a) {
+    if (!a) return "Unknown";
+
+    return a
+        .toUpperCase()
+        .replace(/\s+/g, "")
+        .replace("1/4", "")
+        .replace("¼", "")
+        .replace("(APPROX.)", "");
+}
 function drawSectionMap(aliquot) {
 
     let percentX = 0.5;
