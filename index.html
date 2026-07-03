@@ -289,15 +289,27 @@ try {
 
 
   let aliquot = cleanAliquot(await lookupAliquot(coords.lat, coords.lon));
-        
 
- if (!aliquot) {
+if (!aliquot) {
     aliquot = 'Center';
-} 
+}
 
-    } catch (err) {
-        result.innerText = `Error: ${err.message}`;
-    }
+result.innerHTML = `
+Latitude: ${coords.lat}
+Longitude: ${coords.lon}
+
+Township: ${township}
+Range: ${range}
+Section: ${section}
+Quarter-Quarter: ${aliquot}
+
+Legal Description:
+T${township} R${range} Sec ${section} ${aliquot}
+`;
+
+} catch (err) {
+    result.innerText = `Error: ${err.message}`;
+}
 }
 
 function openGoogleEarth() {
