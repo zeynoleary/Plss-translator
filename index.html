@@ -289,21 +289,14 @@ try {
 
 
   let aliquot = "Unknown";
-
 try {
-    const secGeom = window.sectionData?.features?.[0]?.geometry;
+    aliquot = approxQuarterQuarter(coords.lat, coords.lon, {
+        xmin: coords.lon - 0.5,
+        xmax: coords.lon + 0.5,
+        ymin: coords.lat - 0.5,
+        ymax: coords.lat + 0.5
+    });
 
-    if (secGeom) {
-        const bounds = {
-            xmin: secGeom.rings[0][0][0],
-            ymin: secGeom.rings[0][0][1],
-            xmax: secGeom.rings[0][0][0],
-            ymax: secGeom.rings[0][0][1]
-        };
-
-        // NOTE: true QQ approximation based on real section geometry footprint
-        aliquot = approxQuarterQuarter(coords.lat, coords.lon, bounds);
-    }
 } catch (e) {
     console.log("QQ fallback failed", e);
     aliquot = "Unknown";
