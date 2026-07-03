@@ -290,10 +290,18 @@ try {
 
   let aliquotRaw = await lookupAliquot(coords.lat, coords.lon);
 
-let aliquot = cleanAliquot(aliquotRaw);
+// DO NOT over-clean (this was breaking structure)
+let aliquot = aliquotRaw ? aliquotRaw.toUpperCase().replace(/\s+/g, "") : null;
 
-// fallback if missing or only quarter-section
-if (!aliquot || aliquot.length <= 2) {
+// detect invalid / partial / missing values
+const isBadAliquot =
+    !aliquot ||
+    aliquot === "UNKNOWN" ||
+    aliquot.length < 4 ||
+    aliquot.includes("QQ") ||
+    aliquot === "QSEC";
+
+if (isBadAliquot) {
     aliquot = approxQuarterQuarter(coords.lat, coords.lon, {
         xmin: coords.lon - 0.01,
         xmax: coords.lon + 0.01,
@@ -303,7 +311,7 @@ if (!aliquot || aliquot.length <= 2) {
 }
 
 if (!aliquot) {
-    aliquot = 'Center';
+    aliquot = "Center";
 }
 
 result.innerHTML = `
