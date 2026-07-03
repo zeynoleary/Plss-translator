@@ -288,7 +288,19 @@ try {
 }
 
 
-  let aliquot = cleanAliquot(await lookupAliquot(coords.lat, coords.lon));
+  let aliquotRaw = await lookupAliquot(coords.lat, coords.lon);
+
+let aliquot = cleanAliquot(aliquotRaw);
+
+// fallback if missing or only quarter-section
+if (!aliquot || aliquot.length <= 2) {
+    aliquot = approxQuarterQuarter(coords.lat, coords.lon, {
+        xmin: coords.lon - 0.01,
+        xmax: coords.lon + 0.01,
+        ymin: coords.lat - 0.01,
+        ymax: coords.lat + 0.01
+    });
+}
 
 if (!aliquot) {
     aliquot = 'Center';
