@@ -288,31 +288,28 @@ try {
 }
 
 
-  let aliquotRaw = await lookupAliquot(coords.lat, coords.lon);
+  let aliquot = "Unknown";
 
-// DO NOT over-clean (this was breaking structure)
-let aliquot = aliquotRaw ? aliquotRaw.toUpperCase().replace(/\s+/g, "") : null;
+try {
+    const secGeom = window.sectionData?.features?.[0]?.geometry;
 
-// detect invalid / partial / missing values
-const isBadAliquot =
-    !aliquot ||
-    aliquot === "UNKNOWN" ||
-    aliquot.length < 4 ||
-    aliquot.includes("QQ") ||
-    aliquot === "QSEC";
+    if (secGeom) {
+        const bounds = {
+            xmin: secGeom.rings[0][0][0],
+            ymin: secGeom.rings[0][0][1],
+            xmax: secGeom.rings[0][0][0],
+            ymax: secGeom.rings[0][0][1]
+        };
 
-if (isBadAliquot) {
-    aliquot = approxQuarterQuarter(coords.lat, coords.lon, {
-        xmin: coords.lon - 0.01,
-        xmax: coords.lon + 0.01,
-        ymin: coords.lat - 0.01,
-        ymax: coords.lat + 0.01
-    });
+        // NOTE: true QQ approximation based on real section geometry footprint
+        aliquot = approxQuarterQuarter(coords.lat, coords.lon, bounds);
+    }
+} catch (e) {
+    console.log("QQ fallback failed", e);
+    aliquot = "Unknown";
 }
 
-if (!aliquot) {
-    aliquot = "Center";
-}
+if (!aliquot) aliquot = "Unknown";
 
 result.innerHTML = `
 Latitude: ${coords.lat}
